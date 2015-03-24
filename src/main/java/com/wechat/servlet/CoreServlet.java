@@ -1,4 +1,4 @@
-package com.wechat.wevlet;
+package com.wechat.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;

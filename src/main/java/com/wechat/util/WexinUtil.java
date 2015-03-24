@@ -1,6 +1,7 @@
 package com.wechat.util;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -13,14 +14,24 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.wechat.pojo.AccessToken;
+import com.wechat.pojo.Menu;
 
 public class WexinUtil {
 	
 	
 	private static Logger log = LoggerFactory.getLogger(WexinUtil.class);  
+	
+	public final static String access_token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
+	
+	public static String menu_create_url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
+	
 	
 	private static ObjectMapper objectManger = new ObjectMapper(); 
 	  
@@ -87,6 +98,47 @@ public class WexinUtil {
         }  
         return null;  
     }  
+    
+    
+    public static AccessToken getToken() throws JsonParseException, JsonMappingException, IOException {
+		AccessToken accessToken = null;  
+		  
+	    String requestUrl = access_token_url.replace("APPID", "xxxxxxxxxxx").replace("APPSECRET", "xxxxxxxxxxxxxx");  
+	    Map<String,String> map = WexinUtil.httpRequest(requestUrl, "GET", null);  
+	    // 如果请求成功  
+	    if (null != map) {  
+            accessToken = new AccessToken();  
+            accessToken.setToken(map.get("access_token"));  
+            accessToken.setExpiresIn(Integer.valueOf(map.get("expires_in"))); 
+            
+            System.out.println(accessToken);
+            
+	    }  
+	    return accessToken;  
+	}
+    
+    public static String createMenu(Menu menu, String accessToken) throws JsonParseException, IOException, Exception {  
+	    String result = "0";  
+	  
+	    // 拼装创建菜单的url  
+	    String url = menu_create_url.replace("ACCESS_TOKEN", getToken().getToken());  
+	    // 将菜单对象转换成json字符串  
+	    String jsonMenu = JsonUtils.jsonFromObject(menu);  
+	    // 调用接口创建菜单  
+	    Map<String,String> map = WexinUtil.httpRequest(url, "POST", jsonMenu);  
+	  
+	    log.error(map.toString());
+	    
+	    if (null != map) {  
+	        if (null != map.get("errcode")) {  
+	            result = map.get("errcode");  
+	            System.out.println("创建菜单 " + map.get("errmsg"));  
+	        }  
+	    }  
+	    return result;  
+	}
+    
+    
 	
 
 }

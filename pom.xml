@@ -38,10 +38,10 @@
 			<version>${slf_version}</version>
 		</dependency>
 		<!-- ace libs -->
-		<dependency>
+		<dependency> 
 			<groupId>com.alibaba.appengine</groupId>
 			<artifactId>services-api</artifactId>
-			<version>1.4.15</version>
+			<version>1.4.15</version> 
 			<scope>provided</scope>
 		</dependency>
 

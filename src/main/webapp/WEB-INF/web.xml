@@ -63,14 +63,17 @@
     <servlet-name>LogServiceDemo</servlet-name>
     <url-pattern>/LogServiceDemo.do</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <description></description>
     <display-name>CoreServlet</display-name>
     <servlet-name>CoreServlet</servlet-name>
-    <servlet-class>com.wechat.wevlet.CoreServlet</servlet-class>
+    <servlet-class>com.wechat.servlet.CoreServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>CoreServlet</servlet-name>
     <url-pattern>/CoreServlet</url-pattern>
   </servlet-mapping>
+  
+  
 </web-app>
