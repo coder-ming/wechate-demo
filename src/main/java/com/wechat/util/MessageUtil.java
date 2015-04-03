@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.util.QuickWriter;
@@ -21,8 +23,11 @@ import com.wechat.message.resp.Article;
 import com.wechat.message.resp.MusicMessage;
 import com.wechat.message.resp.NewsMessage;
 import com.wechat.message.resp.TextMessage;
+import com.wechat.service.CoreService;
 
 public class MessageUtil {
+	
+	private static final Logger logger = LoggerFactory.getLogger(CoreService.class);
 	
 	 /** 
      * 返回消息类型：文本 
@@ -105,6 +110,8 @@ public class MessageUtil {
         Element root = document.getRootElement();  
         // 得到根元素的所有子节点  
         List<Element> elementList = root.elements();  
+        
+        logger.info("request xml data = " + reader.toString());
   
         // 遍历所有子节点  
         for (Element e : elementList)  

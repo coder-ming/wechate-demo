@@ -7,12 +7,17 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.wechat.message.resp.Article;
 import com.wechat.message.resp.NewsMessage;
 import com.wechat.message.resp.TextMessage;
 import com.wechat.util.MessageUtil;
 
 public class CoreService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(CoreService.class);
 	
 	/** 
      * 处理微信发来的请求 
@@ -131,6 +136,8 @@ public class CoreService {
             // xml请求解析  
             Map<String, String> requestMap = MessageUtil.parseXml(request);  
   
+            logger.info("request map data = " + requestMap);
+            
             // 发送方帐号（open_id）  
             String fromUserName = requestMap.get("FromUserName");  
             // 公众帐号  
@@ -295,6 +302,9 @@ public class CoreService {
         } catch (Exception e) {  
             e.printStackTrace();  
         }  
+        
+        logger.info("response data = " + respMessage);
+        
         return respMessage;  
     }  
   

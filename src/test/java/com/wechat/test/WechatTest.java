@@ -1,6 +1,10 @@
 package com.wechat.test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.JsonParseException;
@@ -11,11 +15,13 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.wechat.pojo.AccessToken;
+import com.wechat.pojo.Article;
 import com.wechat.pojo.Button;
 import com.wechat.pojo.CommonButton;
 import com.wechat.pojo.ComplexButton;
 import com.wechat.pojo.Menu;
+import com.wechat.pojo.PicMessage;
+import com.wechat.pojo.SendMessage;
 import com.wechat.pojo.ViewButton;
 import com.wechat.util.JsonUtils;
 import com.wechat.util.WexinUtil;
@@ -25,7 +31,7 @@ public class WechatTest {
 	private static Logger log = LoggerFactory.getLogger(WexinUtil.class);  
 	
 	
-	public static String token = "CW5h6UlQklbcvuC4OpZA-RBeud48x6Mqapjf32a4gORnpLJX43hrYVHmgt3KKTmTtXN0zmQ7xf9cyQ74mXGUpASvytF7M5kqctrVFrBZVhM";
+	public static String token = "SLCkxN_y1Ym61vSxm7eBrsnZaKvFQW1gIVJ2ED-8JWSGxRmmuetcd_kRb9mwZuJGrzOpyNPT6D0oU7Kb44jvSStRQYDX49NrEr5jsRf7fx4";
 	  
 	
 	@Test
@@ -74,7 +80,7 @@ public class WechatTest {
 	
 	public static Menu getMenu() {
 		CommonButton btn11 = new CommonButton();  
-        btn11.setName("天气预报");  
+        btn11.setName("天气预报1111");  
         btn11.setType("click");  
         btn11.setKey("11");  
   
@@ -172,6 +178,130 @@ public class WechatTest {
   
         return menu; 
 	}
+	
+	
+	@Test
+	public void uploadMaterial() {
+		try {
+			String url = WexinUtil.upload_media.replace("ACCESS_TOKEN", token);
+			String ret = WexinUtil.uploadFile(url, "C:\\Users\\ming\\Desktop\\75104ef43ff7a61f50540de10f3ce1b7.jpg");
+			System.out.println(ret);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	//media_id : Dqjx7r55hNPaCKa46Yg3Nr4nH3FoVntEruFN0iP46m0a7Un2oUYScC-8Cjju2AaF
+	
+	
+	/**
+	 * 保存图文素材ID
+	 * ret : {media_id=fddruTE2pymX4F-Wg16ffCcTWPSZiQG-p8T7SO_ERkE-AGr89B__y5Bf0bGwCotK, created_at=1427554248, type=news}
+	 * ret : {media_id=fAkncKBZvl1-ji4f1Y68Lf8ZD1QuOkqHtCSAqvQklpoo6f0uGB4bN11egfis4UPQ, created_at=1427558949, type=news}
+	 * {media_id=jBHn5WlITHiIPdpLYCiMY0DgJnU3Pfq9TPn8ZucvRU7ti0T4ye6a3PoyYrw7BBID, created_at=1427559582, type=news}
+		{media_id=o8ZzKW5I8IkkeAqtlkbw72hufrj5-W-G0mCHbw6HKwNBmDX4VphEyjzR_SiXep8L, created_at=1427559953, type=news}
+	 */
+	@Test
+	public void testMaterail() {
+		String url = WexinUtil.add_news.replace("ACCESS_TOKEN", token);
+		List<Article> list = new ArrayList<Article>();
+		Article article = new Article();
+		article.setThumb_media_id("JOmxweslkj1202p27PnWpU5Bq-N1UfHp4DBupEMgHyPTjL_T6ZtaRySz6fJblf-_");
+		article.setAuthor("tom");
+		article.setContent("helloworld");
+		article.setContent_source_url("www.baidu.com");
+		article.setShow_cover_pic("1");
+		article.setDigest("digest");
+		article.setTitle("helloworld111");
+		
+		Article article2 = new Article();
+		article2.setThumb_media_id("JOmxweslkj1202p27PnWpU5Bq-N1UfHp4DBupEMgHyPTjL_T6ZtaRySz6fJblf-_");
+		article2.setAuthor("tom");
+		article2.setContent("helloworld");
+		article2.setContent_source_url("www.baidu.com");
+		article2.setShow_cover_pic("1)");
+		article2.setDigest("digest");
+		article2.setTitle("helloworld111");
+		list.add(article2);
+		
+		Map<String, List<Article>> map = new HashMap<String, List<Article>>();
+		map.put("articles", list);
+		
+		String post = JsonUtils.jsonFromObject(map);
+		System.out.println(post);
+		
+		System.out.println(WexinUtil.httpRequest(url, "POST", post));
+	}
+	
+	/**
+	 * 测试批量OPENID消息
+	 * ret : {msg_id=2352711688, errmsg=send job submission success, errcode=0}
+	 */
+	@Test
+	public void testSendMessage() {
+		String url = WexinUtil.send_message.replace("ACCESS_TOKEN", token);
+		SendMessage message = new SendMessage();
+		message.setTouser(Arrays.asList("oR68yt6iJZhjR1zvzb_2sPnBtz9w","oR68ytxX7bCugayF9G4MMBZFJUpQ"));
+		message.setMsgtype("text");
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("content", "hello from boxer.");
+		message.setText(map);
+		String post = JsonUtils.jsonFromObject(message);
+		System.out.println(post);
+		System.out.println(WexinUtil.httpRequest(url, "POST", post));
+	}
+	
+	/**
+	 * 测试批量OPENID发消息
+	 * ret : {msg_id=2352711688, errmsg=send job submission success, errcode=0}
+	 */
+	@Test
+	public void testSendMessage2() {
+		String url = WexinUtil.send_message.replace("ACCESS_TOKEN", token);
+		SendMessage message = new SendMessage();
+		message.setTouser(Arrays.asList("oR68yt6iJZhjR1zvzb_2sPnBtz9w","oR68ytxX7bCugayF9G4MMBZFJUpQ"));
+		message.setMsgtype("mpnews");
+		Map<String,String> mpnews = new HashMap<String,String>();
+		mpnews.put("media_id", "o8ZzKW5I8IkkeAqtlkbw72hufrj5-W-G0mCHbw6HKwNBmDX4VphEyjzR_SiXep8L");
+		message.setMpnews(mpnews);
+		String post = JsonUtils.jsonFromObject(message);
+		System.out.println(post);
+		System.out.println(WexinUtil.httpRequest(url, "POST", post));
+	}
+	
+	
+	
+	/**
+	 * 测试群发
+	 * ret : 
+	 */
+	@Test
+	public void testMessageALL() {
+		String url = WexinUtil.send_all_message.replace("ACCESS_TOKEN", token);
+		
+		PicMessage picMessage = new PicMessage();
+		Map<String,String> filter = new HashMap<String,String>();
+		filter.put("is_to_all", "true");
+		picMessage.setFilter(filter);
+		Map<String,String> mpnews = new HashMap<String,String>();
+		mpnews.put("media_id", "o8ZzKW5I8IkkeAqtlkbw72hufrj5-W-G0mCHbw6HKwNBmDX4VphEyjzR_SiXep8L");
+		picMessage.setMpnews(mpnews);
+		picMessage.setMsgtype("mpnews");
+		String post = JsonUtils.jsonFromObject(picMessage);
+		System.out.println(post);
+		
+		System.out.println(WexinUtil.httpRequest(url, "POST", post));
+	}
+	
+	
+	/**
+	 * 获取临时素材
+	 */
+	@Test
+	public void testGetMaterial() {
+		String url = "https://api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=Dqjx7r55hNPaCKa46Yg3Nr4nH3FoVntEruFN0iP46m0a7Un2oUYScC-8Cjju2AaF".replace("ACCESS_TOKEN", token);
+		System.out.println(WexinUtil.httpRequest(url, "GET", null));
+	}
+	
 	
 	
 

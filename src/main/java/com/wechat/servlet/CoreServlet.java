@@ -46,7 +46,7 @@ public class CoreServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");  
   
         // 调用核心业务类接收消息、处理消息  
-        String respMessage = CoreService.processRequest(request);  
+        String respMessage = CoreService.processRequestMessage(request);  
           
         // 响应消息  
         PrintWriter out = response.getWriter();  
